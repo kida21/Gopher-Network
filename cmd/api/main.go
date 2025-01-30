@@ -9,7 +9,7 @@ import (
 
 	 
 )
-
+const version = "0.0.1"
 func main() {
 
 	cfg := config{ 
@@ -21,6 +21,7 @@ func main() {
 			maxIdleTime: env.GetString("DB_MAXIDLE_TIME"),
 
 		},
+		env: env.GetString("ENV"),
 	}
 	db,err := db.New(cfg.db.addr,cfg.db.maxIdleTime,cfg.db.maxOpenConns,cfg.db.maxIdleConns)
 	if err != nil{

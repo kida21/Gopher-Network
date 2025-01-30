@@ -24,9 +24,8 @@ type dbConfig struct{
 type config struct {
 	Addr string
 	db dbConfig
+	env string
 }
-
-
 
 func(app *application) mount() *chi.Mux{
   r:= chi.NewRouter()
@@ -37,7 +36,12 @@ func(app *application) mount() *chi.Mux{
 
   r.Route("/v1",func (r chi.Router)  {
 	r.Get("/health",app.HealthCheckHanlder)
-  })
+	r.Route("/posts",func(r chi.Router) {
+		r.Post("/",app.createPostHandler)
+	})
+
+  },
+ )
   //r.Use(middleware.Timeout(60 * time.Second))
 return r
 }
@@ -50,6 +54,6 @@ func (app *application) run(mux *chi.Mux) error{
 		ReadTimeout: 10 * time.Second,
 		IdleTimeout: time.Minute,
 	}
-	log.Printf("starting server on %s",app.config.Addr)
+	log.Print("starting server on :",app.config.Addr,app.config.env)
     return srv.ListenAndServe()
 }
