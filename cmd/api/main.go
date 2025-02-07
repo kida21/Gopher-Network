@@ -36,6 +36,7 @@ func main() {
 	}
     
 	r := app.mount()
-	log.Fatal(app.run(r))
+	app.run(r)
+	
 
 }

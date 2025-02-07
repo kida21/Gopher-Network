@@ -12,6 +12,6 @@ func (app *application) HealthCheckHanlder(w http.ResponseWriter,r *http.Request
 		"version":version,
 	}
 	if err :=WriteJson(w,http.StatusOK,data);err !=nil{
-		WriteError(w,http.StatusInternalServerError,"error")
+		app.InternalServerError(w,r,err)
 	}
 }

@@ -38,6 +38,9 @@ func(app *application) mount() *chi.Mux{
 	r.Get("/health",app.HealthCheckHanlder)
 	r.Route("/posts",func(r chi.Router) {
 		r.Post("/",app.createPostHandler)
+		r.Route("/{postId}",func(r chi.Router) {
+			r.Get("/", app.getPostHandler)
+		})
 	})
 
   },
@@ -54,6 +57,6 @@ func (app *application) run(mux *chi.Mux) error{
 		ReadTimeout: 10 * time.Second,
 		IdleTimeout: time.Minute,
 	}
-	log.Print("starting server on :",app.config.Addr,app.config.env)
+	log.Printf("starting server on %s,%s",app.config.Addr,app.config.env)
     return srv.ListenAndServe()
 }
