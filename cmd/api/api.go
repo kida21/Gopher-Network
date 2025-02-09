@@ -40,6 +40,7 @@ func(app *application) mount() *chi.Mux{
 		r.Post("/",app.createPostHandler)
 		r.Route("/{postId}",func(r chi.Router) {
 			r.Get("/", app.getPostHandler)
+			r.Delete("",app.deletePostHandler)
 		})
 	})
 
