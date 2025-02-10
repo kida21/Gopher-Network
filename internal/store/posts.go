@@ -76,7 +76,7 @@ func(s*PostStore) GetPostById(ctx context.Context,id int64)(*Post,error)  {
 	return &post,nil
 }
 func (s*PostStore) Delete(ctx context.Context,id int64)error {
-	query := `Delete from posts where id =$1`
+	query := `DELETE from posts where id =$1`
 	res,err:=s.db.ExecContext(ctx,query,id)
 	if err!=nil{
 		return nil
@@ -90,3 +90,14 @@ func (s*PostStore) Delete(ctx context.Context,id int64)error {
 	}
 	return nil
 }
+func(S*PostStore)Update(ctx context.Context,post *Post)(error){
+   
+	query := `UPDATE posts SET content=$1,title=$2 WHERE id=$3`
+	
+	_,err:=S.db.ExecContext(ctx,query,post.Content,post.Title,post.ID)
+	if err!=nil{
+		return err
+	}
+	return nil
+}
+
