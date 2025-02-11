@@ -34,3 +34,31 @@ if err:= u.db.QueryRowContext(
 }
   return nil
 }
+
+func(u*UserStore)GetUserById(ctx context.Context,userId int64)(*User,error){
+  query:= `
+  SELECT id,username,email,password,created_At from users 
+  WHERE id = $1
+  `
+  user:=&User{};
+  err:=u.db.QueryRowContext(
+	ctx,
+	query,
+	userId,
+  ).Scan(
+   &user.ID,
+   &user.UserName,
+   &user.Email,
+   &user.Password,
+   &user.CreatedAt,
+  )
+  if err!=nil{
+	switch err{
+	case sql.ErrNoRows:
+	return nil,ErrNotFound
+	default:
+    return nil,err
+	}
+	}
+	return user,nil
+}
