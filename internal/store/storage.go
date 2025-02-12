@@ -20,12 +20,18 @@ type Storage struct {
 		Create(context.Context,*User) error
 		GetUserById(context.Context,int64)(*User,error)
 	}
+	Followers interface{
+		Follow(ctx context.Context,FollowId,UserId int64)(error)
+		Unfollow(ctx context.Context,FollowId,UserId int64)(error)
+		
+	}
 }
 
 func NewStorage( db *sql.DB) Storage{
 	return Storage{
 		Posts:&PostStore{db:db} ,
 		Users:&UserStore{db:db},
+		Followers:&FollowStore{db:db},
 		
 	}
 }
