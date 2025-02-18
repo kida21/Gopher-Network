@@ -28,7 +28,7 @@ type PostWithMetaData struct{
  Post
  CommentCount int64 `json:"comment_count"`
 }
-func(s*PostStore)GetUserFeed(ctx context.Context,userId int64)([]PostWithMetaData,error){
+func(s*PostStore)GetUserFeed(ctx context.Context,userId int64,fq PaginatedFeedQuery)([]PostWithMetaData,error){
 	query:=`
 	 SELECT p.id,p.user_id,p.title,p.content,p.created_At,p.tags,u.username
 	 COUNT(C.id) AS comments_count FROM posts p
@@ -37,11 +37,12 @@ func(s*PostStore)GetUserFeed(ctx context.Context,userId int64)([]PostWithMetaDat
 	 JOIN followers f ON f.follower_id = p.user_id OR p.user_id=$1
 	 WHERE f.user_id = $1 OR p.user_id = $1
 	 GROUP BY p.id,p.username
-	 ORDER BY p.created_At DESC
+	 ORDER BY p.created_At `+ fq.Sort +`
+	 LIMIT $2 OFFSET $3
 	`
 	ctx,cancel := context.WithTimeout(ctx,time.Second*5)
 	defer cancel()
-	rows,err:= s.db.QueryContext(ctx,query,userId)
+	rows,err:= s.db.QueryContext(ctx,query,userId,fq.Limit,fq.Offset)
 	if err!=nil{
 		return nil,err
 	}

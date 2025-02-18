@@ -1,4 +1,4 @@
-package main
+package store
 
 import (
 	"net/http"
@@ -6,9 +6,9 @@ import (
 )
 
 type PaginatedFeedQuery struct {
-	Limit  int    `json:"sort" validate:"gte=1,lte=20"`
+	Limit  int    `json:"limit" validate:"gte=1,lte=20"`
 	Offset int    `json:"offset" validate:"gte=0"`
-	sort   string `json:"sort" validate:"oneof=asc desc"`
+	Sort   string `json:"sort" validate:"oneof=asc desc"`
 }
 
 func (f PaginatedFeedQuery) Parse(r *http.Request)(PaginatedFeedQuery,error){
@@ -31,7 +31,7 @@ func (f PaginatedFeedQuery) Parse(r *http.Request)(PaginatedFeedQuery,error){
 	}
 	sort:=qs.Get("sort")
 	if sort!=""{
-		f.sort=sort
+		f.Sort=sort
 	}
 	return f,nil
 }
